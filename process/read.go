@@ -14,7 +14,8 @@ func read(dir, ext string) ([]contents, error) {
 			return nil
 		}
 
-		if filepath.Ext(path) != ext {
+		fext := filepath.Ext(path)
+		if fext != "."+ext {
 			return nil
 		}
 
