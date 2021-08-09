@@ -3,23 +3,32 @@ package process
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
-func match(c []contents, reg, out string) ([]result, error) {
+func match(c []contents, regs []*regexp.Regexp, out string) ([]result, error) {
 	results := []result{}
-	re, err := regexp.Compile("(?m:" + reg + ")")
-	if err != nil {
-		return nil, fmt.Errorf("couldn't compile regex: %s. %w", reg, err)
-	}
 
 	for _, content := range c {
-		matches := re.FindAllStringSubmatch(content.contents, -1)
-		if len(matches) == 0 {
-			continue
-		}
 		sm := []interface{}{}
-		for _, rs := range matches[0][1:] {
-			sm = append(sm, rs)
+		for _, reg := range regs {
+			matches := reg.FindAllStringSubmatch(content.contents, -1)
+			if len(matches) == 0 {
+				continue
+			}
+
+			s := ""
+			sep := ""
+			if len(matches[0]) > 2 {
+				sep = "\n\t"
+				s += sep
+			}
+
+			for _, rs := range matches[0][1:] {
+				s = s + sep + strings.Trim(rs, "\n")
+			}
+
+			sm = append(sm, s)
 		}
 
 		val := fmt.Sprintf(out, sm...)

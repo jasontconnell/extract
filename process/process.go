@@ -1,6 +1,11 @@
 package process
 
-func Run(dir string, ext, reg, out string) ([]string, error) {
+import (
+	"regexp"
+	"strings"
+)
+
+func Run(dir string, ext string, reg []*regexp.Regexp, out string) ([]string, error) {
 
 	c, err := read(dir, ext)
 	if err != nil {
@@ -12,9 +17,12 @@ func Run(dir string, ext, reg, out string) ([]string, error) {
 		return nil, err
 	}
 
-	s := []string{}
+	sep := strings.Repeat("-", 20)
+	s := []string{sep}
 	for _, res := range r {
+		s = append(s, res.filename)
 		s = append(s, res.value)
+		s = append(s, sep)
 	}
 
 	return s, nil
