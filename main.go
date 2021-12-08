@@ -37,19 +37,26 @@ func main() {
 		log.Fatal(fullPath, "is not a directory")
 	}
 
-	regs := []*regexp.Regexp{}
-	out := unassigned[len(unassigned)-1]
+	if len(unassigned)%2 != 0 {
+		log.Fatal("need reg out for as many regular expression output pairs required")
+	}
 
-	for _, rs := range unassigned[:len(unassigned)-1] {
+	inputs := []process.Input{}
+
+	for i := 0; i < len(unassigned); i += 2 {
+		rs := unassigned[i]
+		out := unassigned[i+1]
 		rx, err := regexp.Compile("(?m:" + rs + ")")
 		if err != nil {
 			log.Fatal(err)
 			break
 		}
-		regs = append(regs, rx)
+
+		input := process.Input{Reg: rx, Out: out}
+		inputs = append(inputs, input)
 	}
 
-	s, err := process.Run(fullPath, *ext, regs, out)
+	s, err := process.Run(fullPath, *ext, inputs)
 	if err != nil {
 		log.Fatal(err)
 	}

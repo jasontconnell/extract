@@ -1,18 +1,17 @@
 package process
 
 import (
-	"regexp"
 	"strings"
 )
 
-func Run(dir string, ext string, reg []*regexp.Regexp, out string) ([]string, error) {
+func Run(dir string, ext string, inputs []Input) ([]string, error) {
 
 	c, err := read(dir, ext)
 	if err != nil {
 		return nil, err
 	}
 
-	r, err := match(c, reg, out)
+	r, err := match(c, inputs)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +20,9 @@ func Run(dir string, ext string, reg []*regexp.Regexp, out string) ([]string, er
 	s := []string{sep}
 	for _, res := range r {
 		s = append(s, res.filename)
-		s = append(s, res.value)
+		for _, val := range res.values {
+			s = append(s, val)
+		}
 		s = append(s, sep)
 	}
 

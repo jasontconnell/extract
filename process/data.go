@@ -1,10 +1,19 @@
 package process
 
+import "regexp"
+
 type contents struct {
-	filename, contents string
+	filename string
+	contents string
+	lines    []string
 }
 
 type result struct {
 	filename string
-	value    string
+	values   []string
+}
+
+type Input struct {
+	Reg *regexp.Regexp
+	Out string
 }

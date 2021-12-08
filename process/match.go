@@ -2,37 +2,33 @@ package process
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 )
 
-func match(c []contents, regs []*regexp.Regexp, out string) ([]result, error) {
+func match(c []contents, inputs []Input) ([]result, error) {
 	results := []result{}
-
+	values := []string{}
 	for _, content := range c {
-		sm := []interface{}{}
-		for _, reg := range regs {
-			matches := reg.FindAllStringSubmatch(content.contents, -1)
-			if len(matches) == 0 {
-				continue
-			}
+		for _, line := range content.lines {
+			sm := []interface{}{}
+			for _, input := range inputs {
+				matches := input.Reg.FindAllStringSubmatch(line, -1)
+				if len(matches) == 0 {
+					continue
+				}
 
-			s := ""
-			sep := ""
-			if len(matches[0]) > 2 {
-				sep = "\n\t"
-				s += sep
-			}
+				for _, rs := range matches[0][1:] {
+					sm = append(sm, rs)
+				}
 
-			for _, rs := range matches[0][1:] {
-				s = s + sep + strings.Trim(rs, "\n")
+				fmt.Println(matches[0][1:], len(sm))
+				if len(sm) > 0 {
+					val := fmt.Sprintf(input.Out, sm...)
+					values = append(values, val)
+				}
 			}
-
-			sm = append(sm, s)
 		}
 
-		val := fmt.Sprintf(out, sm...)
-		results = append(results, result{filename: content.filename, value: val})
+		results = append(results, result{filename: content.filename, values: values})
 	}
 
 	return results, nil

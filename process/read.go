@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func read(dir, ext string) ([]contents, error) {
@@ -29,7 +30,8 @@ func read(dir, ext string) ([]contents, error) {
 			return fmt.Errorf("error reading file %s. %w", path, err)
 		}
 
-		c = append(c, contents{filename: path, contents: string(b)})
+		lines := strings.Split(string(b), "\n")
+		c = append(c, contents{filename: path, contents: string(b), lines: lines})
 		return nil
 	})
 
