@@ -20,7 +20,6 @@ func match(c []contents, inputs []Input) ([]result, error) {
 					sm = append(sm, rs)
 				}
 
-				fmt.Println(matches[0][1:], len(sm))
 				if len(sm) > 0 {
 					val := fmt.Sprintf(input.Out, sm...)
 					values = append(values, val)
