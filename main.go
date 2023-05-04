@@ -15,6 +15,7 @@ import (
 func main() {
 	dir := flag.String("d", "", "directory to search")
 	ext := flag.String("e", "txt", "extensions to search")
+	// linemode := flag.Bool("lines", true, "line mode? if yes then it runs the regex once per line per file")
 	flag.Parse()
 
 	unassigned := unassignedFlags(os.Args[1:])
